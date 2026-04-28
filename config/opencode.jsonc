@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // Plugins — see: https://github.com/code-yeongyu/oh-my-openagent
+  "plugin": ["oh-my-openagent@latest"],
+
+  // MCP servers
+  "mcp": {
+    "executor": {
+      "type": "remote",
+      "url": "http://localhost:4788/mcp",
+      "enabled": true,
+    },
+  },
+}
