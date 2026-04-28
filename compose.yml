@@ -1,0 +1,44 @@
+# To mount your own repos/config, add volumes like:
+#   - /path/to/your/repos:/repos:rw
+#   - ~/.ssh:/home/opencode/.ssh:ro
+#   - ~/.agents:/home/opencode/.agents:ro
+#   - /path/to/auth.json:/home/opencode/seed/auth.json:ro
+
+services:
+  opencode-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: opencode-server
+    ports:
+      - "4096:4096"
+      - "4788:4788"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - opencode-data:/home/opencode/.local/share/opencode
+      - opencode-cache:/home/opencode/.cache/opencode
+      # Mount your own config to override defaults baked into the image:
+      # - ./config:/home/opencode/.config/opencode:ro
+    environment:
+      - EXECUTOR_DATA_DIR=/home/opencode/.executor
+      - EXECUTOR_HOSTNAME=${EXECUTOR_HOSTNAME:-}
+      - EXECUTOR_ALLOWED_IP=${EXECUTOR_ALLOWED_IP:-}
+    env_file:
+      - path: ./.env.local
+        required: false
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4096/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+networks:
+  default:
+    external: true
+    name: ${DOCKER_NETWORK:-opencode-network}
+
+volumes:
+  opencode-data:
+  opencode-cache:
