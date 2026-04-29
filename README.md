@@ -16,7 +16,7 @@ services:
       - "4788:4788"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./config:/home/opencode/.config/opencode:ro
+      - ./config:/home/opencode/.config/opencode
       - /path/to/repos:/repos:rw
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
@@ -67,7 +67,7 @@ The image ships a minimal example `config/opencode.jsonc`. Any files you mount t
 services:
   opencode-server:
     volumes:
-      - ./my-config:/home/opencode/.config/opencode:ro
+      - ./my-config:/home/opencode/.config/opencode
 ```
 
 opencode loads any of these files it finds in the config directory:

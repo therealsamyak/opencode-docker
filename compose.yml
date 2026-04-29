@@ -18,7 +18,7 @@ services:
       - opencode-data:/home/opencode/.local/share/opencode
       - opencode-cache:/home/opencode/.cache/opencode
       # Mount your own config to override defaults baked into the image:
-      # - ./config:/home/opencode/.config/opencode:ro
+      # - ./config:/home/opencode/.config/opencode
     environment:
       - EXECUTOR_DATA_DIR=/home/opencode/.executor
       - ALLOWED_HOSTS=${ALLOWED_HOSTS:-}
