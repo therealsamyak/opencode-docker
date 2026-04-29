@@ -129,13 +129,12 @@ Visit [models.dev](https://models.dev/) to find the env var for your provider. S
 
 ### General
 
-| Variable                | Default                | Description                          |
-| ----------------------- | ---------------------- | ------------------------------------ |
-| `GH_TOKEN`              |                        | GitHub token for gh CLI auth         |
-| `OPENCODE_SERVER_URL`   | `opencode-server:4096` | Server URL (hostname:port)           |
-| `EXECUTOR_HOSTNAME`     |                        | Additional allowed host for executor |
-| `EXECUTOR_ALLOWED_IP`   |                        | Allowed IP for executor access       |
-| `DOCKER_NETWORK`        | `opencode-network`     | External Docker network name         |
+| Variable                | Default                | Description                                       |
+| ----------------------- | ---------------------- | -------------------------------------------------- |
+| `GH_TOKEN`              |                        | GitHub token for gh CLI auth                       |
+| `OPENCODE_SERVER_URL`   | `opencode-server:4096` | Server URL (hostname:port)                         |
+| `ALLOWED_HOSTS`         |                        | Space-separated hosts for CORS + executor access   |
+| `DOCKER_NETWORK`        | `opencode-network`     | External Docker network name                       |
 
 ## License
 

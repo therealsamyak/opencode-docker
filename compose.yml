@@ -21,8 +21,7 @@ services:
       # - ./config:/home/opencode/.config/opencode:ro
     environment:
       - EXECUTOR_DATA_DIR=/home/opencode/.executor
-      - EXECUTOR_HOSTNAME=${EXECUTOR_HOSTNAME:-}
-      - EXECUTOR_ALLOWED_IP=${EXECUTOR_ALLOWED_IP:-}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-}
     env_file:
       - path: ./.env.local
         required: false
