@@ -94,18 +94,12 @@ USER opencode
 
 RUN curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.sh | bash
 
-RUN bun add -g opencode-ai executor typescript-language-server typescript lefthook agent-browser && \
+RUN bun add -g opencode-ai executor typescript-language-server typescript lefthook agent-browser pnpm && \
     bun pm -g trust opencode-ai executor lefthook || true
 
-RUN curl -fsSL https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
-
-# Symlink into /usr/local/bin so login shells (agent-spawned) can find it
+# Symlink agent-browser into /usr/local/bin so login shells (agent-spawned) can find it
 USER root
-RUN PNPM_BIN=$(find /home/opencode/.local/share/pnpm/.tools/pnpm-exe -name pnpm -type f) && \
-    printf '#!/bin/sh\nexec %s "$@"\n' "$PNPM_BIN" > /usr/local/bin/pnpm && \
-    printf '#!/bin/sh\nexec %s "$@"\n' "$PNPM_BIN" > /usr/local/bin/pnpx && \
-    chmod +x /usr/local/bin/pnpm /usr/local/bin/pnpx && \
-    ln -s /home/opencode/.bun/bin/agent-browser /usr/local/bin/agent-browser
+RUN ln -s /home/opencode/.bun/bin/agent-browser /usr/local/bin/agent-browser
 
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
       apt-get update && apt-get install -y --no-install-recommends chromium && rm -rf /var/lib/apt/lists/*; \
