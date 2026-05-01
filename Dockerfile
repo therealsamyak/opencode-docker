@@ -86,7 +86,7 @@ COPY entrypoint.sh /home/opencode/entrypoint.sh
 RUN chmod +x /home/opencode/entrypoint.sh
 
 # Ensure PATH includes local bin before running as non-root
-ENV PATH="/home/opencode/.bun/bin:/home/opencode/.local/bin:/home/opencode/.local/share/pnpm:${PATH}"
+ENV PATH="/home/opencode/.bun/bin:/home/opencode/.local/bin:${PATH}"
 ENV EXECUTOR_DATA_DIR=/home/opencode/.executor
 
 # Everything below runs as non-root
@@ -97,14 +97,11 @@ RUN curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/ins
 RUN bun add -g opencode-ai executor typescript-language-server typescript lefthook agent-browser && \
     bun pm -g trust opencode-ai executor lefthook || true
 
-# pnpm - install via official standalone script (bun add -g pnpm produces broken binary)
-RUN curl -fsSL https://get.pnpm.io/install.sh | ENV="/home/opencode/.bashrc" SHELL="/bin/bash" bash -
-
-# Symlink agent-browser + enable pnpm via corepack (login shells / agent-spawned)
+# Symlink agent-browser
 USER root
-RUN ln -s /home/opencode/.bun/bin/agent-browser /usr/local/bin/agent-browser && \
-    ln -sf /home/opencode/.local/share/pnpm/pnpm /usr/local/bin/pnpm && \
-    corepack enable pnpm
+RUN ln -s /home/opencode/.bun/bin/agent-browser /usr/local/bin/agent-browser
+
+RUN corepack enable pnpm && corepack prepare pnpm@latest-10 --activate
 
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
       apt-get update && apt-get install -y --no-install-recommends chromium && rm -rf /var/lib/apt/lists/*; \
