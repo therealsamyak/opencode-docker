@@ -103,11 +103,8 @@ RUN bun add -g opencode-ai executor typescript-language-server typescript leftho
 USER root
 RUN ln -s /home/opencode/.bun/bin/agent-browser /usr/local/bin/agent-browser
 
-USER root
-RUN NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-RUN chown -R opencode:opencode /home/linuxbrew
-
 USER opencode
+RUN NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 RUN echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/opencode/.bashrc && \
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && \
     brew install pnpm node
