@@ -86,7 +86,9 @@ COPY entrypoint.sh /home/opencode/entrypoint.sh
 RUN chmod +x /home/opencode/entrypoint.sh
 
 # Ensure PATH includes local bin before running as non-root
-ENV PATH="/home/opencode/.bun/bin:/home/opencode/.local/bin:${PATH}"
+ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/opencode/.bun/bin:/home/opencode/.local/bin:${PATH}"
+ENV HOMEBREW_NO_ANALYTICS=1
+ENV HOMEBREW_NO_AUTO_UPDATE=1
 ENV EXECUTOR_DATA_DIR=/home/opencode/.executor
 
 # Everything below runs as non-root
@@ -101,7 +103,16 @@ RUN bun add -g opencode-ai executor typescript-language-server typescript leftho
 USER root
 RUN ln -s /home/opencode/.bun/bin/agent-browser /usr/local/bin/agent-browser
 
-RUN corepack enable pnpm && corepack prepare pnpm@latest-10 --activate
+USER root
+RUN NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+RUN chown -R opencode:opencode /home/linuxbrew
+
+USER opencode
+RUN echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/opencode/.bashrc && \
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && \
+    brew install pnpm node
+
+USER root
 
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
       apt-get update && apt-get install -y --no-install-recommends chromium && rm -rf /var/lib/apt/lists/*; \
