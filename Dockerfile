@@ -100,10 +100,11 @@ RUN bun add -g opencode-ai executor typescript-language-server typescript leftho
 # pnpm - install via official standalone script (bun add -g pnpm produces broken binary)
 RUN curl -fsSL https://get.pnpm.io/install.sh | ENV="/home/opencode/.bashrc" SHELL="/bin/bash" bash -
 
-# Symlink agent-browser into /usr/local/bin so login shells (agent-spawned) can find it
+# Symlink agent-browser + enable pnpm via corepack (login shells / agent-spawned)
 USER root
 RUN ln -s /home/opencode/.bun/bin/agent-browser /usr/local/bin/agent-browser && \
-    ln -s /home/opencode/.local/share/pnpm/pnpm /usr/local/bin/pnpm
+    ln -sf /home/opencode/.local/share/pnpm/pnpm /usr/local/bin/pnpm && \
+    corepack enable pnpm
 
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
       apt-get update && apt-get install -y --no-install-recommends chromium && rm -rf /var/lib/apt/lists/*; \
