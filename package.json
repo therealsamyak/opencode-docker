@@ -1,0 +1,12 @@
+{
+  "name": "executor-opencode-docker",
+  "version": "0.0.0",
+  "private": true,
+  "description": "opencode-ai server + executor in a Docker container",
+  "license": "MIT",
+  "devDependencies": {
+    "semantic-release": "^24.2.0",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1"
+  }
+}
