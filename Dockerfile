@@ -107,6 +107,8 @@ USER root
 RUN mkdir -p /home/linuxbrew/.linuxbrew && chown -R opencode:opencode /home/linuxbrew
 
 USER opencode
+
+# Homebrew install for pnpm
 RUN NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 RUN echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/opencode/.bashrc && \
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && \
