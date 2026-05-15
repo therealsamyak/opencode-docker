@@ -62,8 +62,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fonts-freefont-ttf \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=oven/bun /usr/local/bin/bun /usr/local/bin/bun
-COPY --from=oven/bun /usr/local/bin/bunx /usr/local/bin/bunx
+COPY --from=oven/bun:1.3.14 /usr/local/bin/bun /usr/local/bin/bun
+COPY --from=oven/bun:1.3.14 /usr/local/bin/bunx /usr/local/bin/bunx
 
 COPY --from=ghcr.io/astral-sh/uv /uv /usr/local/bin/uv
 COPY --from=ghcr.io/astral-sh/uv /uvx /usr/local/bin/uvx
