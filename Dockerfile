@@ -96,7 +96,7 @@ USER opencode
 
 RUN curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.sh | bash
 
-RUN bun add -g opencode-ai executor typescript-language-server typescript lefthook agent-browser && \
+RUN bun add -g opencode-ai executor@1.4.9 typescript-language-server typescript lefthook agent-browser && \
     bun pm -g trust opencode-ai executor lefthook || true
 
 # Symlink agent-browser
