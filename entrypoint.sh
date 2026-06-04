@@ -48,9 +48,18 @@ EXECUTOR_PID=$!
 # Ensure executor is cleaned up on exit
 trap "kill $EXECUTOR_PID 2>/dev/null" EXIT TERM INT
 
+# Set git identity globally (as opencode user) from env
+GIT_SETUP=""
+if [ -n "$GH_USERNAME" ]; then
+  GIT_SETUP="git config --global user.name \"$GH_USERNAME\";"
+fi
+if [ -n "$GH_EMAIL" ]; then
+  GIT_SETUP="$GIT_SETUP git config --global user.email \"$GH_EMAIL\";"
+fi
+
 # Drop privileges to opencode user (CORS_ARGS injected into opencode serve)
 if [ -n "$GH_TOKEN" ]; then
-  exec runuser -u opencode -- /bin/bash -c "gh auth setup-git && exec $* $CORS_ARGS"
+  exec runuser -u opencode -- /bin/bash -c "$GIT_SETUP gh auth setup-git && exec $* $CORS_ARGS"
 else
-  exec runuser -u opencode -- "$@" $CORS_ARGS
+  exec runuser -u opencode -- /bin/bash -c "$GIT_SETUP exec $* $CORS_ARGS"
 fi
