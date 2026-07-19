@@ -25,28 +25,6 @@ for f in "$SEED_DIR"/*; do
 done
 
 CONFIG_DIR="/home/opencode/.config/opencode"
-if [ -f "$CONFIG_DIR/executor.jsonc" ] && [ ! -f "/workspace/executor.jsonc" ]; then
-  cp "$CONFIG_DIR/executor.jsonc" "/workspace/executor.jsonc"
-fi
-
-# Derive hostname from OPENCODE_SERVER_URL (format: "hostname:port" or "hostname")
-SERVER_HOSTNAME="${OPENCODE_SERVER_URL%%:*}"
-ALL_HOSTS="${SERVER_HOSTNAME:-opencode-server} $ALLOWED_HOSTS"
-
-ALLOWED_ARGS=""
-CORS_ARGS=""
-for h in $ALL_HOSTS; do
-  [ -n "$h" ] || continue
-  ALLOWED_ARGS="$ALLOWED_ARGS --allowed-host $h"
-  CORS_ARGS="$CORS_ARGS --cors $h"
-done
-
-# Start executor web dashboard in background
-executor web --port 4788 --hostname 0.0.0.0 $ALLOWED_ARGS &
-EXECUTOR_PID=$!
-
-# Ensure executor is cleaned up on exit
-trap "kill $EXECUTOR_PID 2>/dev/null" EXIT TERM INT
 
 # Set git identity globally (as opencode user) from env
 GIT_SETUP=""
@@ -57,9 +35,9 @@ if [ -n "$GH_EMAIL" ]; then
   GIT_SETUP="$GIT_SETUP git config --global user.email \"$GH_EMAIL\";"
 fi
 
-# Drop privileges to opencode user (CORS_ARGS injected into opencode serve)
+# Drop privileges to opencode user
 if [ -n "$GH_TOKEN" ]; then
-  exec runuser -u opencode -- /bin/bash -c "$GIT_SETUP gh auth setup-git && exec $* $CORS_ARGS"
+  exec runuser -u opencode -- /bin/bash -c "$GIT_SETUP gh auth setup-git && exec $*"
 else
-  exec runuser -u opencode -- /bin/bash -c "$GIT_SETUP exec $* $CORS_ARGS"
+  exec runuser -u opencode -- /bin/bash -c "$GIT_SETUP exec $*"
 fi
