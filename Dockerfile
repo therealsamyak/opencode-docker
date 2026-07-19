@@ -89,15 +89,14 @@ RUN chmod +x /home/opencode/entrypoint.sh
 ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/opencode/.bun/bin:/home/opencode/.local/bin:${PATH}"
 ENV HOMEBREW_NO_ANALYTICS=1
 ENV HOMEBREW_NO_AUTO_UPDATE=1
-ENV EXECUTOR_DATA_DIR=/home/opencode/.executor
 
 # Everything below runs as non-root
 USER opencode
 
 RUN curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.sh | bash
 
-RUN bun add -g opencode-ai executor@1.4.9 typescript-language-server typescript lefthook agent-browser && \
-    bun pm -g trust opencode-ai executor lefthook || true
+RUN bun add -g opencode-ai typescript-language-server typescript lefthook agent-browser && \
+    bun pm -g trust opencode-ai lefthook || true
 
 # Symlink agent-browser
 USER root
@@ -119,7 +118,7 @@ USER root
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
       apt-get update && apt-get install -y --no-install-recommends chromium && rm -rf /var/lib/apt/lists/*; \
     else \
-      /home/opencode/.bun/bin/agent-browser install --with-deps; \
+      /home/opencode/.bun/bin/agent-browser install; \
     fi
 
 WORKDIR /workspace
