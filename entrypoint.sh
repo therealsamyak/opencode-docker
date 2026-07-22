@@ -26,6 +26,12 @@ done
 
 CONFIG_DIR="/home/opencode/.config/opencode"
 
+# Fix ownership of the cache dir. Named volumes can be polluted by a different
+# UID (e.g. from an older image), which leaves opencode unable to refresh
+# models.json. The refresh writes a temp file next to the target then renames,
+# so the directory itself must be owned by the opencode user.
+chown -R opencode:opencode /home/opencode/.cache/opencode 2>/dev/null || true
+
 # Set git identity globally (as opencode user) from env
 GIT_SETUP=""
 if [ -n "$GH_USERNAME" ]; then
